@@ -28,7 +28,13 @@ import {
   Zap,
   Clock,
   Palette,
-  Bell
+  Bell,
+  Users,
+  Scale,
+  FileDown,
+  Printer,
+  ChevronRight,
+  Building2
 } from "lucide-react";
 import { 
   auth, 
@@ -110,6 +116,14 @@ interface SecurityReport {
   eventCount: number;
   highSeverityCount: number;
   status: 'generated' | 'emailed' | 'downloaded';
+}
+
+interface Tenant {
+  id?: string;
+  unit: string;
+  name: string;
+  numericId: string;
+  status: 'active' | 'moved_out';
 }
 
 // --- Presentation Component ---
@@ -405,10 +419,11 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [reports, setReports] = useState<SecurityReport[]>([]);
   const [events, setEvents] = useState<EventLog[]>([]);
+  const [tenants, setTenants] = useState<Tenant[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState<string | null>(null);
   const [showDashboard, setShowDashboard] = useState(false);
-  const [dashboardTab, setDashboardTab] = useState<'overview' | 'weirdness' | 'branding' | 'config'>('overview');
+  const [dashboardTab, setDashboardTab] = useState<'overview' | 'tenants' | 'compliance' | 'weirdness' | 'branding' | 'config'>('overview');
   const [isGeneratingAsset, setIsGeneratingAsset] = useState(false);
   const [generatedAssetUrl, setGeneratedAssetUrl] = useState<string | null>(null);
   const [selectedAssetType, setSelectedAssetType] = useState('App Icon');
@@ -518,10 +533,16 @@ export default function App() {
       }
     }, (error) => handleFirestoreError(error, OperationType.GET, 'config/weirdness'));
 
+    const tenantsQuery = query(collection(db, 'tenants'), orderBy('unit', 'asc'));
+    const unsubTenants = onSnapshot(tenantsQuery, (snapshot) => {
+      setTenants(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Tenant)));
+    }, (error) => handleFirestoreError(error, OperationType.LIST, 'tenants'));
+
     return () => {
       unsubReports();
       unsubEvents();
       unsubConfig();
+      unsubTenants();
     };
   }, [user]);
 
@@ -730,6 +751,72 @@ export default function App() {
     }
   };
 
+  const addMockTenant = async () => {
+    if (!user) return;
+    const unit = Math.floor(Math.random() * 24 + 1).toString().padStart(2, '0');
+    const numericId = Math.floor(100 + Math.random() * 900).toString();
+    const names = ["John Smith", "Maria Garcia", "David Chen", "Sarah Miller", "James Wilson"];
+    
+    const newTenant: Omit<Tenant, 'id'> = {
+      unit: `Unit ${unit}`,
+      name: names[Math.floor(Math.random() * names.length)],
+      numericId: `#${numericId}`,
+      status: 'active'
+    };
+
+    try {
+      await addDoc(collection(db, 'tenants'), newTenant);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.CREATE, 'tenants');
+    }
+  };
+
+  const printPresentation = () => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const slidesHtml = [
+      {
+        title: "SILVERBACK AI",
+        subtitle: "Next-Generation Security Systems",
+        content: "Protecting 3875 Ruby St with intelligent camera recognition and real-time weirdness detection. Secure, private, and compliant."
+      },
+      {
+        title: "The Challenge",
+        subtitle: "Vintage Property Security",
+        content: "Vintage 24-unit, 3-story apartment buildings present unique security challenges. Silverback AI provides proactive monitoring while respecting tenant privacy."
+      },
+      {
+        title: "AI Tracking Demo",
+        subtitle: "Front Door & Mailboxes",
+        content: "Our AI tracks activity at the front door and mailboxes. Tenants are identified only by numeric IDs. Owners only receive footage during 'outside normal operations' alerts."
+      },
+      {
+        title: "Data Sovereignty",
+        subtitle: "Oakland Law Compliance",
+        content: "All footage is stored on a secure Virtual Machine (VM). Access is restricted: footage is only passed to police upon their official request for an incident, in accordance with Oakland laws and tenant rights."
+      }
+    ].map(s => `
+      <div style="page-break-after: always; padding: 40px; font-family: sans-serif; border: 1px solid #eee; margin-bottom: 20px;">
+        <div style="color: #f97316; font-family: monospace; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; margin-bottom: 10px;">${s.subtitle}</div>
+        <h1 style="font-size: 48px; margin: 0 0 20px 0; font-weight: 900;">${s.title}</h1>
+        <p style="font-size: 20px; line-height: 1.6; color: #444;">${s.content}</p>
+        <div style="margin-top: 100px; font-size: 10px; color: #999;">SILVERBACK AI - SECURITY | 3875 Ruby St, Oakland</div>
+      </div>
+    `).join('');
+
+    printWindow.document.write(`
+      <html>
+        <head><title>Silverback AI Presentation</title></head>
+        <body style="margin: 0; padding: 0;">
+          ${slidesHtml}
+          <script>window.print();</script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
   if (view === 'presentation') {
     return (
       <PresentationView 
@@ -770,32 +857,32 @@ export default function App() {
                 <span className="text-brand-orange font-black text-xl tracking-tighter">SAI</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-xl tracking-tighter leading-none">SILVERBACK AI</span>
-                <span className="text-[10px] text-brand-orange font-mono tracking-[0.2em] uppercase opacity-80">Security Systems</span>
+                <span className="font-bold text-lg md:text-xl tracking-tighter leading-none">SILVERBACK AI</span>
+                <span className="text-[8px] md:text-[10px] text-brand-orange font-mono tracking-[0.2em] uppercase opacity-80">Security Systems</span>
               </div>
             </div>
             
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 md:gap-4">
               {user ? (
                 <>
                   <button 
                     onClick={() => setView('presentation')}
-                    className="hidden md:flex items-center gap-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+                    className="flex items-center gap-2 text-xs md:text-sm font-medium text-zinc-400 hover:text-white transition-colors"
                   >
                     <FileText className="w-4 h-4" />
-                    Presentation
+                    <span className="hidden sm:inline">Presentation</span>
                   </button>
                   <button 
                     onClick={() => setShowDashboard(!showDashboard)}
-                    className="hidden md:flex items-center gap-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+                    className="flex items-center gap-2 text-xs md:text-sm font-medium text-zinc-400 hover:text-white transition-colors"
                   >
                     <History className="w-4 h-4" />
-                    Dashboard
+                    <span className="hidden sm:inline">Dashboard</span>
                   </button>
-                  <div className="flex items-center gap-3 pl-4 border-l border-white/10">
-                    <img src={user.photoURL || ""} alt="" className="w-8 h-8 rounded-full border border-white/10" />
+                  <div className="flex items-center gap-2 md:gap-3 pl-2 md:pl-4 border-l border-white/10">
+                    <img src={user.photoURL || ""} alt="" className="w-6 h-6 md:w-8 md:h-8 rounded-full border border-white/10" />
                     <button onClick={handleLogout} className="text-zinc-400 hover:text-white transition-colors">
-                      <LogOut className="w-5 h-5" />
+                      <LogOut className="w-4 h-4 md:w-5 md:h-5" />
                     </button>
                   </div>
                 </>
@@ -1089,12 +1176,12 @@ export default function App() {
                 <h2 className="text-3xl font-bold mb-2">Security Dashboard</h2>
                 <p className="text-zinc-400">Manage reports and monitor events for 3875 Ruby St.</p>
               </div>
-              <div className="flex bg-white/5 p-1 rounded-xl border border-white/10">
-                {(['overview', 'weirdness', 'branding', 'config'] as const).map((tab) => (
+              <div className="flex overflow-x-auto no-scrollbar bg-white/5 p-1 rounded-xl border border-white/10 w-full md:w-auto">
+                {(['overview', 'tenants', 'compliance', 'weirdness', 'branding', 'config'] as const).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setDashboardTab(tab)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all capitalize ${
+                    className={`px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all capitalize whitespace-nowrap ${
                       dashboardTab === tab 
                         ? 'bg-brand-orange text-white shadow-[0_0_15px_rgba(249,115,22,0.4)]' 
                         : 'text-zinc-400 hover:text-white'
@@ -1104,18 +1191,32 @@ export default function App() {
                   </button>
                 ))}
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-2 md:gap-3 w-full md:w-auto overflow-x-auto no-scrollbar">
+                {dashboardTab === 'tenants' && (
+                  <button 
+                    onClick={addMockTenant}
+                    className="bg-brand-orange/10 border border-brand-orange/30 text-brand-orange px-4 py-2 rounded-lg text-xs md:text-sm font-medium hover:bg-brand-orange/20 transition-all flex items-center gap-2 whitespace-nowrap"
+                  >
+                    <Plus className="w-4 h-4" /> Add Tenant
+                  </button>
+                )}
                 <button 
                   onClick={() => addMockEvent('weirdness_alert')}
-                  className="bg-brand-orange/10 border border-brand-orange/30 text-brand-orange px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-orange/20 transition-all flex items-center gap-2"
+                  className="bg-brand-orange/10 border border-brand-orange/30 text-brand-orange px-4 py-2 rounded-lg text-xs md:text-sm font-medium hover:bg-brand-orange/20 transition-all flex items-center gap-2 whitespace-nowrap"
                 >
-                  <Bell className="w-4 h-4" /> Trigger Real-time Alert
+                  <Bell className="w-4 h-4" /> <span className="hidden sm:inline">Trigger Alert</span><span className="sm:hidden">Alert</span>
                 </button>
                 <button 
                   onClick={() => addMockEvent()}
-                  className="bg-white/5 border border-white/10 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 transition-all flex items-center gap-2"
+                  className="bg-white/5 border border-white/10 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-medium hover:bg-white/10 transition-all flex items-center gap-2 whitespace-nowrap"
                 >
-                  <Plus className="w-4 h-4" /> Mock Event
+                  <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Mock Event</span><span className="sm:hidden">Mock</span>
+                </button>
+                <button 
+                  onClick={printPresentation}
+                  className="bg-brand-orange/10 border border-brand-orange/30 text-brand-orange px-4 py-2 rounded-lg text-xs md:text-sm font-medium hover:bg-brand-orange/20 transition-all flex items-center gap-2 whitespace-nowrap"
+                >
+                  <Printer className="w-4 h-4" /> <span className="hidden sm:inline">Print Slides</span><span className="sm:hidden">Print</span>
                 </button>
                 <div className="relative group">
                   <button 
@@ -1501,6 +1602,193 @@ export default function App() {
               </div>
             )}
 
+            {dashboardTab === 'tenants' && (
+              <div className="space-y-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  <div className="lg:col-span-2 space-y-6">
+                    <div className="bg-zinc-900/50 border border-white/10 rounded-2xl overflow-hidden">
+                      <div className="p-6 border-b border-white/10 flex justify-between items-center">
+                        <h3 className="font-bold text-lg flex items-center gap-2">
+                          <Users className="w-5 h-5 text-brand-orange" />
+                          Resident Directory
+                        </h3>
+                        <span className="text-xs text-zinc-500 font-mono">{tenants.length} Units Registered</span>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr className="bg-white/5 text-[10px] font-mono uppercase tracking-widest text-zinc-500">
+                              <th className="px-6 py-4">Unit</th>
+                              <th className="px-6 py-4">Resident Name</th>
+                              <th className="px-6 py-4">Numeric ID (AI)</th>
+                              <th className="px-6 py-4">Status</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-white/5">
+                            {tenants.map((tenant) => (
+                              <tr key={tenant.id} className="hover:bg-white/[0.02] transition-colors group">
+                                <td className="px-6 py-4 font-bold text-brand-orange">{tenant.unit}</td>
+                                <td className="px-6 py-4 text-sm">{tenant.name}</td>
+                                <td className="px-6 py-4">
+                                  <span className="bg-zinc-800 px-2 py-1 rounded font-mono text-xs text-brand-silver">
+                                    {tenant.numericId}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4">
+                                  <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase text-green-500">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                                    {tenant.status.replace('_', ' ')}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                            {tenants.length === 0 && (
+                              <tr>
+                                <td colSpan={4} className="px-6 py-12 text-center text-zinc-500 italic">
+                                  No residents registered yet. Use "Add Tenant" to begin.
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div className="bg-brand-orange/10 border border-brand-orange/20 rounded-2xl p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <FileDown className="w-5 h-5 text-brand-orange" />
+                        <h3 className="font-bold">Lease Addendum</h3>
+                      </div>
+                      <p className="text-xs text-zinc-400 mb-6 leading-relaxed">
+                        Copy this text into your lease agreements to ensure legal compliance and transparency with residents.
+                      </p>
+                      <div className="bg-black/40 p-4 rounded-xl border border-white/5 text-[10px] font-mono text-zinc-300 leading-relaxed max-h-64 overflow-y-auto mb-6">
+                        <p className="font-bold mb-2 uppercase">ADDENDUM: AI SECURITY MONITORING</p>
+                        <p>1. The Property utilizes Silverback AI security monitoring in common areas (ingress/egress, mailboxes, lobby).</p>
+                        <p className="mt-2">2. AI processing occurs locally. Residents are identified by anonymized Numeric IDs (e.g., #402) for behavioral pattern analysis.</p>
+                        <p className="mt-2">3. Facial recognition is NOT used for routine monitoring. Faces are automatically obscured at the edge.</p>
+                        <p className="mt-2">4. Video footage is stored on a secure, isolated Virtual Machine and is only accessed by Management during security alerts of "outside normal operations".</p>
+                        <p className="mt-2">5. Footage is only shared with law enforcement upon official request for specific incident investigation.</p>
+                      </div>
+                      <button 
+                        onClick={() => {
+                          const text = `ADDENDUM: AI SECURITY MONITORING\n\n1. The Property utilizes Silverback AI security monitoring in common areas...\n\n[Full text available in dashboard]`;
+                          navigator.clipboard.writeText(text);
+                          alert("Addendum template copied to clipboard!");
+                        }}
+                        className="w-full bg-brand-orange text-white py-3 rounded-xl font-bold text-sm hover:bg-orange-500 transition-all"
+                      >
+                        Copy Template
+                      </button>
+                    </div>
+
+                    <div className="bg-zinc-900/50 border border-white/10 rounded-2xl p-6">
+                      <h4 className="font-bold text-sm mb-4">Why Tell Tenants?</h4>
+                      <div className="space-y-4 text-xs text-zinc-400">
+                        <div className="flex gap-3">
+                          <CheckCircle2 className="w-4 h-4 text-brand-orange shrink-0" />
+                          <p><span className="text-white font-medium">Transparency:</span> Reduces friction and builds trust with residents.</p>
+                        </div>
+                        <div className="flex gap-3">
+                          <CheckCircle2 className="w-4 h-4 text-brand-orange shrink-0" />
+                          <p><span className="text-white font-medium">Deterrence:</span> Knowing AI is monitoring "weirdness" prevents internal incidents.</p>
+                        </div>
+                        <div className="flex gap-3">
+                          <CheckCircle2 className="w-4 h-4 text-brand-orange shrink-0" />
+                          <p><span className="text-white font-medium">Legal Safety:</span> Disclosure is key to compliance with Oakland privacy laws.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {dashboardTab === 'compliance' && (
+              <div className="space-y-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="bg-zinc-900/50 border border-white/10 rounded-2xl p-8">
+                    <div className="flex items-center gap-3 mb-8">
+                      <Scale className="w-6 h-6 text-brand-orange" />
+                      <h3 className="text-2xl font-bold">Legal Framework</h3>
+                    </div>
+                    
+                    <div className="space-y-8">
+                      <div>
+                        <h4 className="font-bold text-white mb-3 flex items-center gap-2">
+                          <ChevronRight className="w-4 h-4 text-brand-orange" />
+                          Oakland Surveillance Ordinance (9.64)
+                        </h4>
+                        <p className="text-sm text-zinc-400 leading-relaxed pl-6">
+                          Silverback AI is designed to meet the strict transparency requirements of Oakland's surveillance laws. 
+                          By using edge-processing and anonymized IDs, we minimize "surveillance creep" while maximizing security.
+                        </p>
+                      </div>
+
+                      <div>
+                        <h4 className="font-bold text-white mb-3 flex items-center gap-2">
+                          <ChevronRight className="w-4 h-4 text-brand-orange" />
+                          Tenant Protection Act (AB 1482)
+                        </h4>
+                        <p className="text-sm text-zinc-400 leading-relaxed pl-6">
+                          Our sublease verification tools provide the "Just Cause" evidence required for enforcement under AB 1482, 
+                          ensuring property owners have verifiable data for lease compliance.
+                        </p>
+                      </div>
+
+                      <div>
+                        <h4 className="font-bold text-white mb-3 flex items-center gap-2">
+                          <ChevronRight className="w-4 h-4 text-brand-orange" />
+                          Reasonable Expectation of Privacy
+                        </h4>
+                        <p className="text-sm text-zinc-400 leading-relaxed pl-6">
+                          Courts generally uphold monitoring in common areas (lobbies, mailrooms) as long as residents are notified. 
+                          Silverback AI never monitors private dwelling spaces.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-zinc-900/50 border border-white/10 rounded-2xl p-8">
+                    <div className="flex items-center gap-3 mb-8">
+                      <Building2 className="w-6 h-6 text-brand-orange" />
+                      <h3 className="text-2xl font-bold">Deployment Guide</h3>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="p-6 bg-white/5 rounded-2xl border border-white/5">
+                        <h5 className="font-bold mb-4 text-brand-silver uppercase text-xs tracking-widest">Current Camera Integration</h5>
+                        <div className="space-y-4">
+                          <div className="flex gap-4">
+                            <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold shrink-0">1</div>
+                            <p className="text-sm text-zinc-400"><span className="text-white font-medium">RTSP Handshake:</span> Connect your existing IP cameras (Tapo, Amcrest, etc.) via RTSP in the Config tab.</p>
+                          </div>
+                          <div className="flex gap-4">
+                            <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold shrink-0">2</div>
+                            <p className="text-sm text-zinc-400"><span className="text-white font-medium">Edge Node:</span> Deploy a local VM or "Old Laptop" as the processing node to keep data on-site.</p>
+                          </div>
+                          <div className="flex gap-4">
+                            <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold shrink-0">3</div>
+                            <p className="text-sm text-zinc-400"><span className="text-white font-medium">Zone Definition:</span> Focus cameras on the front door and mailbox bank for maximum impact.</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-6 bg-brand-orange/5 rounded-2xl border border-brand-orange/10">
+                        <h5 className="font-bold mb-4 text-brand-orange uppercase text-xs tracking-widest">Recommended Hardware</h5>
+                        <ul className="text-sm text-zinc-400 space-y-2">
+                          <li className="flex justify-between"><span>Primary Camera:</span> <span className="text-white">Tapo C120 (RTSP)</span></li>
+                          <li className="flex justify-between"><span>Processing:</span> <span className="text-white">i5 Laptop / 8GB RAM</span></li>
+                          <li className="flex justify-between"><span>Storage:</span> <span className="text-white">500GB SSD (Encrypted)</span></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             {dashboardTab === 'config' && (
               <div className="max-w-3xl mx-auto">
                 <div className="bg-zinc-900/50 border border-white/10 rounded-2xl p-8">
