@@ -184,15 +184,15 @@ interface Tenant {
 function PresentationView({ onClose, currentSlide, setCurrentSlide }: { onClose: () => void, currentSlide: number, setCurrentSlide: (s: number) => void }) {
   const slides = [
     {
-      title: "SILVERBACK AI",
-      subtitle: "Next-Generation Security Systems",
-      content: "Protecting 3875 Ruby St with intelligent camera recognition and real-time weirdness detection. Secure, private, and compliant.",
-      bg: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1200"
+      title: "SILVERBACK AI @ RUBY ST",
+      subtitle: "Mosswood's Urban Core",
+      content: "We aren't luxury, but we offer high-end tech. Protecting 3875 Ruby St with intelligent camera recognition in a neighborhood that warrants it.",
+      bg: "https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&q=80&w=1200"
     },
     {
-      title: "The Challenge",
-      subtitle: "Vintage Property Security",
-      content: "Vintage 24-unit, 3-story apartment buildings present unique security challenges. Silverback AI provides proactive monitoring while respecting tenant privacy.",
+      title: "The Cameras Now Have Teeth",
+      subtitle: "Proactive, Not Reactive",
+      content: "Cameras have always been here. Now, they actively monitor for 'weirdness'—lingering, off-hours motion, and unauthorized access—without needing a human watching 24/7.",
       bg: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200"
     },
     {
@@ -203,9 +203,9 @@ function PresentationView({ onClose, currentSlide, setCurrentSlide }: { onClose:
       bg: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200"
     },
     {
-      title: "Data Sovereignty",
-      subtitle: "Oakland Law Compliance",
-      content: "All footage is stored on a secure Virtual Machine (VM). Access is restricted: footage is only passed to police upon their official request for an incident, in accordance with Oakland laws and tenant rights.",
+      title: "Tenant Transparency",
+      subtitle: "Clear Communication",
+      content: "We tell tenants upfront: The AI protects the building, but it doesn't spy on you. Faces are obscured, and footage is only pulled for 'outside normal operations' events.",
       bg: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=1200"
     }
   ];
@@ -970,14 +970,16 @@ export default function App() {
                 >
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-orange/10 border border-brand-orange/20 text-xs font-medium text-brand-orange mb-6">
                     <span className="w-2 h-2 rounded-full bg-brand-orange animate-pulse shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
-                    SILVERBACK AI - SECURITY: Secure and Smart
+                    Now Protecting 3875 Ruby St
                   </div>
-                  <h1 className="text-5xl md:text-8xl font-bold tracking-tight mb-6 leading-[0.95] text-white">
-                    Advanced AI Security for <span className="text-brand-orange">3875 Ruby St.</span>
+                  <h1 className="text-5xl md:text-8xl font-black tracking-tighter mb-6 leading-[0.95] text-white">
+                    THE CAMERAS NOW <br/>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-orange-300">
+                      HAVE TEETH.
+                    </span>
                   </h1>
-                  <p className="text-xl text-zinc-400 mb-10 leading-relaxed">
-                    Protecting Oakland property with intelligent camera recognition. 
-                    Stop theft, prevent break-ins, and verify subleases without compromising resident privacy.
+                  <p className="text-xl text-zinc-400 mb-10 leading-relaxed max-w-2xl">
+                    Bringing high-end security tech to Mosswood's urban core. Protect your property, attract travel nurses, and ensure tenant safety without compromising privacy.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4">
                     {user ? (
@@ -1231,7 +1233,7 @@ export default function App() {
                 <p className="text-zinc-400">Manage reports and monitor events for 3875 Ruby St.</p>
               </div>
               <div className="flex overflow-x-auto no-scrollbar bg-white/5 p-1 rounded-xl border border-white/10 w-full md:w-auto">
-                {(['overview', 'tenants', 'compliance', 'weirdness', 'branding', 'config'] as const).map((tab) => (
+                {(['overview', 'live', 'tenants', 'compliance', 'weirdness', 'branding', 'config'] as const).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setDashboardTab(tab)}
@@ -1241,7 +1243,7 @@ export default function App() {
                         : 'text-zinc-400 hover:text-white'
                     }`}
                   >
-                    {tab}
+                    {tab === 'live' ? 'Live View' : tab}
                   </button>
                 ))}
               </div>
@@ -1581,6 +1583,116 @@ export default function App() {
             </div>
           )}
 
+          {dashboardTab === 'live' && (
+            <div className="space-y-8">
+              <div className="glass-card p-8 security-gradient">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+                  <div>
+                    <h2 className="text-3xl font-bold mb-2 flex items-center gap-3">
+                      <Camera className="text-brand-orange w-8 h-8" />
+                      Live Camera Feeds
+                    </h2>
+                    <p className="text-zinc-400">Real-time monitoring of 3875 Ruby St common areas.</p>
+                  </div>
+                  {weirdnessConfig.rtspUrl ? (
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-green-500/10 border border-green-500/20 text-xs font-bold text-green-500 uppercase tracking-widest">
+                      <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                      Stream Connected
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-xs font-bold text-red-500 uppercase tracking-widest">
+                      <span className="w-2 h-2 rounded-full bg-red-500" />
+                      Stream Offline
+                    </div>
+                  )}
+                </div>
+
+                {weirdnessConfig.rtspUrl ? (
+                  <div className="space-y-6">
+                    <div className="relative aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group">
+                      {/* Simulated Live Feed Image */}
+                      <img 
+                        src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200" 
+                        className="w-full h-full object-cover grayscale opacity-80"
+                        alt="Live Feed"
+                        referrerPolicy="no-referrer"
+                      />
+                      
+                      {/* Scanning Grid Overlay */}
+                      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-30 mix-blend-overlay" />
+                      
+                      {/* UI Overlays */}
+                      <div className="absolute top-4 left-4 flex items-center gap-3">
+                        <div className="bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                          LIVE
+                        </div>
+                        <div className="bg-black/60 backdrop-blur-md text-white text-[10px] font-mono px-2 py-1 rounded border border-white/10">
+                          CAM-01: FRONT LOBBY
+                        </div>
+                      </div>
+
+                      <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white text-[10px] font-mono px-2 py-1 rounded border border-white/10">
+                        {new Date().toLocaleTimeString()} | 24 FPS | 1080p
+                      </div>
+
+                      <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md text-zinc-400 text-[10px] font-mono px-2 py-1 rounded border border-white/10">
+                        RTSP: {weirdnessConfig.rtspUrl}
+                      </div>
+
+                      {/* Simulated AI Tracking Box */}
+                      <motion.div 
+                        animate={{ 
+                          x: [200, 250, 220, 200],
+                          y: [250, 260, 240, 250]
+                        }}
+                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                        className="absolute w-40 h-64 border-2 border-brand-orange bg-brand-orange/5 rounded-lg flex flex-col items-center pointer-events-none"
+                      >
+                        <div className="absolute -top-6 left-0 bg-brand-orange text-black text-[10px] font-bold px-2 py-0.5 rounded uppercase">
+                          ID #882 - Resident
+                        </div>
+                        <div className="w-full h-20 bg-brand-orange/90 backdrop-blur-md mt-0 rounded-t-lg flex items-center justify-center overflow-hidden">
+                          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagmonds-light.png')] opacity-50" />
+                          <span className="text-[8px] text-black font-bold uppercase tracking-widest relative z-10">Privacy Shield</span>
+                        </div>
+                      </motion.div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                        <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-1">Current Status</div>
+                        <div className="text-sm font-medium text-green-400">Normal Operations</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                        <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-1">Active AI Models</div>
+                        <div className="text-sm font-medium text-white">Motion, Lingering, Privacy Blur</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                        <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-1">Network Latency</div>
+                        <div className="text-sm font-medium text-white">42ms</div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-20 border-2 border-dashed border-white/10 rounded-2xl bg-black/20">
+                    <Camera className="w-16 h-16 text-zinc-700 mx-auto mb-4" />
+                    <h3 className="text-xl font-bold text-white mb-2">No Camera Configured</h3>
+                    <p className="text-zinc-500 mb-6 max-w-md mx-auto">
+                      Please configure your RTSP stream URL in the Settings tab to view the live feed.
+                    </p>
+                    <button 
+                      onClick={() => setDashboardTab('config')}
+                      className="bg-brand-orange text-white px-6 py-3 rounded-xl font-bold hover:bg-orange-500 transition-all"
+                    >
+                      Go to Settings
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {dashboardTab === 'weirdness' && (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-6">
@@ -1875,13 +1987,43 @@ export default function App() {
                   <div className="space-y-6">
                     <div className="bg-brand-orange/10 border border-brand-orange/20 rounded-2xl p-6">
                       <div className="flex items-center gap-3 mb-4">
+                        <Mail className="w-5 h-5 text-brand-orange" />
+                        <h3 className="font-bold">Notice to Residents</h3>
+                      </div>
+                      <p className="text-xs text-zinc-400 mb-6 leading-relaxed">
+                        Use this template to inform existing tenants about the security upgrade.
+                      </p>
+                      <div className="bg-black/40 p-4 rounded-xl border border-white/5 text-[10px] font-mono text-zinc-300 leading-relaxed max-h-64 overflow-y-auto mb-6">
+                        <p className="font-bold mb-2 uppercase">SUBJECT: SECURITY UPGRADE AT 3875 RUBY ST</p>
+                        <p>Dear Residents,</p>
+                        <p className="mt-2">As part of our commitment to providing a secure environment in Mosswood, we are upgrading our building's technology. The security cameras in the common areas have always been there, but we are now equipping them with Silverback AI software.</p>
+                        <p className="mt-2 font-bold">What this means for you:</p>
+                        <p className="mt-1">- Better Security: The system automatically detects "weirdness" (like lingering non-residents or off-hours activity) and alerts management.</p>
+                        <p className="mt-1">- Privacy First: The AI does NOT use facial recognition on residents. It tracks movement patterns, not personal identities. Faces are obscured.</p>
+                        <p className="mt-1">- Peace of Mind: We are bringing high-end security tech to our building to ensure your safety in an urban neighborhood.</p>
+                        <p className="mt-2">This upgrade goes live next week. If you have any questions, please contact management.</p>
+                      </div>
+                      <button 
+                        onClick={() => {
+                          const text = `SUBJECT: SECURITY UPGRADE AT 3875 RUBY ST\n\nDear Residents,\n\nAs part of our commitment to providing a secure environment in Mosswood, we are upgrading our building's technology. The security cameras in the common areas have always been there, but we are now equipping them with Silverback AI software.\n\nWhat this means for you:\n- Better Security: The system automatically detects "weirdness" (like lingering non-residents or off-hours activity) and alerts management.\n- Privacy First: The AI does NOT use facial recognition on residents. It tracks movement patterns, not personal identities. Faces are obscured.\n- Peace of Mind: We are bringing high-end security tech to our building to ensure your safety in an urban neighborhood.\n\nThis upgrade goes live next week. If you have any questions, please contact management.`;
+                          navigator.clipboard.writeText(text);
+                          alert("Notice template copied to clipboard!");
+                        }}
+                        className="w-full bg-brand-orange text-white py-3 rounded-xl font-bold text-sm hover:bg-orange-500 transition-all mb-4"
+                      >
+                        Copy Notice Template
+                      </button>
+                    </div>
+
+                    <div className="bg-zinc-900/50 border border-white/10 rounded-2xl p-6">
+                      <div className="flex items-center gap-3 mb-4">
                         <FileDown className="w-5 h-5 text-brand-orange" />
                         <h3 className="font-bold">Lease Addendum</h3>
                       </div>
                       <p className="text-xs text-zinc-400 mb-6 leading-relaxed">
-                        Copy this text into your lease agreements to ensure legal compliance and transparency with residents.
+                        Copy this text into your lease agreements to ensure legal compliance.
                       </p>
-                      <div className="bg-black/40 p-4 rounded-xl border border-white/5 text-[10px] font-mono text-zinc-300 leading-relaxed max-h-64 overflow-y-auto mb-6">
+                      <div className="bg-black/40 p-4 rounded-xl border border-white/5 text-[10px] font-mono text-zinc-300 leading-relaxed max-h-48 overflow-y-auto mb-6">
                         <p className="font-bold mb-2 uppercase">ADDENDUM: AI SECURITY MONITORING</p>
                         <p>1. The Property utilizes Silverback AI security monitoring in common areas (ingress/egress, mailboxes, lobby).</p>
                         <p className="mt-2">2. AI processing occurs locally. Residents are identified by anonymized Numeric IDs (e.g., #402) for behavioral pattern analysis.</p>
@@ -1895,9 +2037,9 @@ export default function App() {
                           navigator.clipboard.writeText(text);
                           alert("Addendum template copied to clipboard!");
                         }}
-                        className="w-full bg-brand-orange text-white py-3 rounded-xl font-bold text-sm hover:bg-orange-500 transition-all"
+                        className="w-full bg-white/10 text-white py-3 rounded-xl font-bold text-sm hover:bg-white/20 transition-all"
                       >
-                        Copy Template
+                        Copy Lease Addendum
                       </button>
                     </div>
 
