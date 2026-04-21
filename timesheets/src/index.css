@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #036B3A;
+  --color-primary-dark: #024E2A;
+  --color-primary-light: #E8F5EE;
+  --color-accent: #2CA01C;
+  --color-navy: #1F3A5F;
+  --color-navy-dark: #172B47;
+  --color-text: #091E42;
+  --color-text-muted: #5E6C84;
+  --color-text-light: #97A0AF;
+  --color-border: #DFE1E6;
+  --color-border-light: #EBECF0;
+  --color-bg: #FAFBFC;
+  --color-bg-card: #FFFFFF;
+  --color-success: #00875A;
+  --color-success-light: #E3FCEF;
+  --color-warning: #FF8B00;
+  --color-warning-light: #FFF7E6;
+  --color-danger: #DE350B;
+  --color-danger-light: #FFEBE6;
+
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01", "ss03";
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.tabular {
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* keypad button press */
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+.shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* subtle row dividers */
+.row-divider {
+  box-shadow: inset 0 -1px 0 var(--color-border-light);
+}
+
+/* focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+button {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
