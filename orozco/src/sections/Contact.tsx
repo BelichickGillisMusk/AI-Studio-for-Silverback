@@ -25,7 +25,8 @@ export function Contact() {
           </a>
           <a
             href={`mailto:${EMAIL}?subject=${encodeURIComponent('Free estimate request')}`}
-            className="inline-flex items-center gap-2 h-14 px-6 rounded-2xl text-lg font-bold bg-white text-ink hover:bg-cream transition"
+            className="inline-flex items-center gap-2 h-14 px-6 rounded-2xl text-lg font-bold bg-white hover:bg-cream transition"
+            style={{ color: '#101820' }}
           >
             <Mail size={20} /> {EMAIL}
           </a>

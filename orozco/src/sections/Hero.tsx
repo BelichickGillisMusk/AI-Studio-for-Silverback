@@ -38,7 +38,8 @@ export function Hero() {
               </a>
               <a
                 href={`mailto:${EMAIL}?subject=${encodeURIComponent('Free estimate request')}`}
-                className="inline-flex items-center gap-2 h-12 px-5 rounded-xl text-base font-bold bg-white text-ink hover:bg-cream transition"
+                className="inline-flex items-center gap-2 h-12 px-5 rounded-xl text-base font-bold bg-white hover:bg-cream transition"
+                style={{ color: '#101820' }}
               >
                 <Mail size={18} /> {t.hero.ctaEstimate}
               </a>
