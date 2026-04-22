@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --color-midnight: #0B1020;
+  --color-midnight-2: #141A33;
+  --color-steel: #1F2A44;
+  --color-silver: #E8D9B0;
+  --color-silver-2: #C9B685;
+  --color-ink: #0F172A;
+  --color-ink-muted: #475569;
+  --color-ink-light: #94A3B8;
+  --color-paper: #FFFFFF;
+  --color-cream: #F5F1E8;
+  --color-line: #E2E8F0;
+
+  --color-mx-green: #006847;
+  --color-mx-red: #C8102E;
+  --color-us-blue: #0A3161;
+  --color-us-red: #B31942;
+  --color-accent: #38BDF8;
+
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+  color: var(--color-ink);
+  background: var(--color-paper);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 8px; }
+
+.tabular { font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+
+/* Silverback brand gradient background */
+.bg-silverback {
+  background-color: var(--color-midnight);
+  background-image:
+    radial-gradient(1000px 500px at 10% -10%, rgba(232,217,176,0.08), transparent 60%),
+    radial-gradient(800px 500px at 100% 20%, rgba(56,189,248,0.08), transparent 55%),
+    linear-gradient(180deg, #0B1020 0%, #0E152A 45%, #0B1020 100%);
+}
+
+.card-glass {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border: 1px solid rgba(232,217,176,0.18);
+  backdrop-filter: blur(6px);
+}
+
+.btn-silver {
+  background: var(--color-silver);
+  color: var(--color-midnight);
+  box-shadow: 0 8px 20px -6px rgba(232,217,176,0.45);
+}
+.btn-silver:hover { background: var(--color-silver-2); }

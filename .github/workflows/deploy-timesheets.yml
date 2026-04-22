@@ -1,4 +1,4 @@
-name: Deploy Time Sheets to Pages
+name: Deploy Silverback + Orozco + Time Sheets to Pages
 
 on:
   push:
@@ -6,6 +6,8 @@ on:
       - main
       - claude/pay-me-saas-build-uazJN
     paths:
+      - 'silverback/**'
+      - 'orozco/**'
       - 'timesheets/**'
       - '.github/workflows/deploy-timesheets.yml'
   workflow_dispatch: {}
@@ -15,7 +17,6 @@ permissions:
   pages: write
   id-token: write
 
-# Prevent concurrent deploys from racing.
 concurrency:
   group: pages
   cancel-in-progress: true
@@ -23,9 +24,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: timesheets
+    env:
+      PAGES_BASE: /${{ github.event.repository.name }}
     steps:
       - uses: actions/checkout@v4
 
@@ -33,19 +33,51 @@ jobs:
         with:
           node-version: '20'
           cache: npm
-          cache-dependency-path: timesheets/package-lock.json
 
-      - run: npm ci
-
-      - name: Build with GitHub Pages base path
+      - name: Install silverback
+        working-directory: silverback
+        run: npm ci
+      - name: Build silverback (root /)
+        working-directory: silverback
         env:
-          # Sets Vite `base` so asset URLs resolve at /<repo-name>/.
-          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_BASE_PATH: ${{ env.PAGES_BASE }}/
         run: npm run build
+
+      - name: Install orozco
+        working-directory: orozco
+        run: npm ci
+      - name: Build orozco (/orozco/)
+        working-directory: orozco
+        env:
+          VITE_BASE_PATH: ${{ env.PAGES_BASE }}/orozco/
+        run: npm run build
+
+      - name: Install timesheets
+        working-directory: timesheets
+        run: npm ci
+      - name: Build timesheets (/timesheets/)
+        working-directory: timesheets
+        env:
+          VITE_BASE_PATH: ${{ env.PAGES_BASE }}/timesheets/
+        run: npm run build
+
+      - name: Assemble combined dist
+        run: |
+          mkdir -p combined-dist
+          cp -r silverback/dist/. combined-dist/
+          cp -r orozco/dist combined-dist/orozco
+          cp -r timesheets/dist combined-dist/timesheets
+          cp orozco/gbp.md combined-dist/gbp.md
+          mkdir -p combined-dist/orozco/send
+          cp -r orozco/send/. combined-dist/orozco/send/
+          if [ -f combined-dist/timesheets/index.html ]; then
+            cp combined-dist/timesheets/index.html combined-dist/timesheets/404.html
+          fi
+          ls -la combined-dist
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: timesheets/dist
+          path: combined-dist
 
   deploy:
     needs: build
