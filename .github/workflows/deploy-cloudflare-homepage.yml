@@ -1,0 +1,53 @@
+name: Deploy Homepage to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+      - copilot/add-ai-studio-features
+    paths:
+      - 'homepage/**'
+      - 'orozco/**'
+      - 'scripts/build.sh'
+      - '.github/workflows/deploy-cloudflare-homepage.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-homepage
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_PAGES_PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: |
+            homepage/package-lock.json
+            orozco/package-lock.json
+
+      - name: Validate Cloudflare project name
+        run: |
+          if [ -z "$CLOUDFLARE_PAGES_PROJECT_NAME" ]; then
+            echo "Set repository variable CLOUDFLARE_PAGES_PROJECT_NAME."
+            exit 1
+          fi
+
+      - name: Build homepage bundle
+        run: bash scripts/build.sh
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy public_dist --project-name ${{ env.CLOUDFLARE_PAGES_PROJECT_NAME }}
