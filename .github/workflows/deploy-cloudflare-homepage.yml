@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - copilot/add-ai-studio-features
     paths:
       - 'homepage/**'
       - 'orozco/**'
