@@ -1,0 +1,1 @@
+test plain text — if this shows as plain text via raw URL, the API auto-base64s
