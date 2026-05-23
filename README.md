@@ -19,6 +19,21 @@ View your app in AI Studio: https://ai.studio/apps/d3deeaf9-500c-40a5-a8f4-39a75
 3. Run the app:
    `npm run dev`
 
+## Auto-deploy homepage to Cloudflare Pages
+
+This repo now supports push-to-deploy for the homepage stack (`/homepage` + `/orozco`)
+via GitHub Actions workflow:
+`.github/workflows/deploy-cloudflare-homepage.yml`.
+
+Set these once in GitHub repo settings:
+
+- **Secret** `CLOUDFLARE_API_TOKEN` (Pages deploy token)
+- **Secret** `CLOUDFLARE_ACCOUNT_ID` (Cloudflare account id)
+- **Variable** `CLOUDFLARE_PAGES_PROJECT_NAME` (Pages project name for `silverbackai.agency`)
+
+After that, commits pushed from Google AI Studio to `main` automatically build and deploy
+to Cloudflare Pages.
+
 ---
 
 ## Time Sheets by Silverback — prototype
