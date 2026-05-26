@@ -21,6 +21,7 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       CLOUDFLARE_PAGES_PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
     steps:
@@ -40,15 +41,15 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           if [ -z "$CLOUDFLARE_PAGES_PROJECT_NAME" ]; then
-            echo "Set repository variable CLOUDFLARE_PAGES_PROJECT_NAME."
+            echo "::error::Set repository variable CLOUDFLARE_PAGES_PROJECT_NAME." >&2
             exit 1
           fi
           if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
-            echo "Set repository secret CLOUDFLARE_API_TOKEN."
+            echo "::error::Set repository secret CLOUDFLARE_API_TOKEN." >&2
             exit 1
           fi
           if [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
-            echo "Set repository secret CLOUDFLARE_ACCOUNT_ID."
+            echo "::error::Set repository secret CLOUDFLARE_ACCOUNT_ID." >&2
             exit 1
           fi
 
@@ -56,7 +57,7 @@ jobs:
         run: bash scripts/build.sh
 
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
