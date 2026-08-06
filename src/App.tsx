@@ -591,7 +591,13 @@ export default function App() {
       if (snapshot.exists()) {
         setWeirdnessConfig(snapshot.data() as WeirdnessConfig);
       }
-    }, (error) => handleFirestoreError(error, OperationType.GET, 'config/weirdness'));
+    }, (error) => {
+      if ((error as any)?.code === 'permission-denied') {
+        console.info("Config read requires admin role — using defaults");
+      } else {
+        handleFirestoreError(error, OperationType.GET, 'config/weirdness');
+      }
+    });
 
     const tenantsQuery = query(collection(db, 'tenants'), orderBy('unit', 'asc'));
     const unsubTenants = onSnapshot(tenantsQuery, (snapshot) => {
@@ -621,21 +627,23 @@ export default function App() {
     setIsAnalyzing(event.id);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: `Analyze this security event clip description and provide a more detailed, professional security assessment. 
-        Event Type: ${event.type}
-        Initial Description: ${event.description}
-        Severity: ${event.severity}
-        
-        Provide a detailed breakdown of what might be happening, potential risks, and recommended actions. Keep it concise but professional.`,
+      const resp = await fetch("/api/ai/analyze-event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          eventType: event.type,
+          description: event.description,
+          severity: event.severity,
+        }),
       });
 
-      const analysis = response.text || "No analysis available.";
-      
+      if (!resp.ok) {
+        throw new Error(`Server returned ${resp.status}`);
+      }
+
+      const { analysis } = await resp.json();
       const eventRef = doc(db, 'event_logs', event.id);
-      await updateDoc(eventRef, { aiAnalysis: analysis });
+      await updateDoc(eventRef, { aiAnalysis: analysis || "No analysis available." });
     } catch (error) {
       console.error("AI Analysis failed:", error);
       handleFirestoreError(error, OperationType.UPDATE, `event_logs/${event.id}`);
