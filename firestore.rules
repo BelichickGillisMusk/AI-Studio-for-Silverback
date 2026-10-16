@@ -152,7 +152,7 @@ service cloud.firestore {
     }
 
     match /config/weirdness {
-      allow read: if isAuthenticated();
+      allow read: if isAdmin();
       allow write: if isAdmin() && isValidWeirdnessConfig(request.resource.data);
     }
   }
