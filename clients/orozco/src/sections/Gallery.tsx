@@ -28,7 +28,7 @@ export function Gallery() {
         </div>
 
         <p className="mt-6 text-xs text-ink-light">
-          {/* REPLACE WITH MIGUEL'S PHOTOS — drop files in orozco/public/photos/ and swap tiles for <img src="/photos/X.jpg" /> */}
+          {/* REPLACE WITH MIGUEL'S PHOTOS — drop files in clients/orozco/public/photos/ and swap tiles for <img src="/photos/X.jpg" /> */}
         </p>
       </div>
     </section>

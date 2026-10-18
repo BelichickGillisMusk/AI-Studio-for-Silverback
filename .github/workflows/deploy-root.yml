@@ -3,11 +3,11 @@ on:
   push:
     branches: [main]
     paths:
-      - 'index.html'
-      - 'src/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'vite.config.*'
+      - 'products/security/index.html'
+      - 'products/security/src/**'
+      - 'products/security/package.json'
+      - 'products/security/package-lock.json'
+      - 'products/security/vite.config.*'
       - '.github/workflows/deploy-root.yml'
 permissions:
   contents: read
@@ -15,6 +15,9 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: products/security
     steps:
       - uses: actions/checkout@v4
       - name: Require Cloudflare API token
@@ -24,17 +27,22 @@ jobs:
             echo "Grant repo access at: https://github.com/organizations/BelichickGillisMusk/settings/secrets/actions"
             exit 1
           fi
+        working-directory: .
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
+          cache-dependency-path: products/security/package-lock.json
       - run: npm ci
       - run: npm run build
       - name: Disable worker-route wrangler.toml for Pages deploy
+        working-directory: .
         run: |
           if [ -f wrangler.toml ] && grep -qE '^\[\[routes\]\]|^routes\s*=' wrangler.toml; then
             mv wrangler.toml wrangler.toml.worker-routes-disabled
           fi
       - name: Deploy to Cloudflare Pages
+        working-directory: .
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: npx wrangler@3.90.0 pages deploy dist --project-name=ai-studio-for-silverback
+        run: npx wrangler@3.90.0 pages deploy products/security/dist --project-name=ai-studio-for-silverback
