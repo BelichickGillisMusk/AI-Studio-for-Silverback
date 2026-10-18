@@ -1,38 +1,16 @@
 {
-  "name": "react-example",
+  "name": "ai-studio-for-silverback",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "description": "Silverback studio monorepo — agency sites, client sites, and products.",
   "scripts": {
-    "dev": "tsx server.ts",
-    "build": "vite build",
-    "preview": "vite preview",
-    "clean": "rm -rf dist",
-    "lint": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@google/genai": "^1.29.0",
-    "@tailwindcss/vite": "^4.1.14",
-    "@vitejs/plugin-react": "^5.0.4",
-    "dotenv": "^17.2.3",
-    "express": "^4.21.2",
-    "firebase": "^12.11.0",
-    "lucide-react": "^0.546.0",
-    "motion": "^12.23.24",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "recharts": "^3.8.1",
-    "vite": "^6.2.0",
-    "ws": "^8.20.0"
-  },
-  "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/node": "^22.14.0",
-    "@types/ws": "^8.18.1",
-    "autoprefixer": "^10.4.21",
-    "tailwindcss": "^4.1.14",
-    "tsx": "^4.21.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "dev": "npm run dev --prefix products/security",
+    "dev:security": "npm run dev --prefix products/security",
+    "dev:homepage": "npm run dev --prefix agency/homepage",
+    "dev:silverback": "npm run dev --prefix agency/silverback",
+    "dev:orozco": "npm run dev --prefix clients/orozco",
+    "dev:timesheets": "npm run dev --prefix products/timesheets",
+    "build:security": "npm run build --prefix products/security",
+    "build:homepage": "bash scripts/build.sh",
+    "lint": "npm run lint --prefix products/security"
   }
 }

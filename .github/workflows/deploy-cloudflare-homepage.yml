@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'homepage/**'
-      - 'orozco/**'
+      - 'agency/homepage/**'
+      - 'clients/orozco/**'
       - 'scripts/build.sh'
       - '.github/workflows/deploy-cloudflare-homepage.yml'
   workflow_dispatch: {}
@@ -32,8 +32,8 @@ jobs:
           node-version: '20'
           cache: npm
           cache-dependency-path: |
-            homepage/package-lock.json
-            orozco/package-lock.json
+            agency/homepage/package-lock.json
+            clients/orozco/package-lock.json
 
       - name: Validate Cloudflare deploy settings
         env:

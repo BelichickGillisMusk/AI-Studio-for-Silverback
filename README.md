@@ -2,28 +2,52 @@
 <img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-# Run and deploy your AI Studio app
+# AI Studio for Silverback
 
-This contains everything you need to run your app locally.
+Apps in this repo are grouped by what they are:
 
-View your app in AI Studio: https://ai.studio/apps/d3deeaf9-500c-40a5-a8f4-39a756d120af
+```
+agency/           Silverback marketing
+  homepage/       silverbackai.agency
+  silverback/     proposal landing + case study
 
-## Run Locally
+clients/          work for a specific customer
+  orozco/         Orozco Landscaping site + send PDFs
 
-**Prerequisites:**  Node.js
+products/         things we sell or run
+  security/       apartment AI monitoring (AI Studio app)
+  timesheets/     Time Sheets by Silverback prototype
 
+scripts/          shared build helpers
+.github/          deploy workflows
+```
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Public URLs did not change. Only the folders on disk moved.
+
+View the security app in AI Studio: https://ai.studio/apps/d3deeaf9-500c-40a5-a8f4-39a756d120af
+
+## Run locally
+
+**Prerequisites:** Node.js
+
+From the repo root:
+
+```bash
+npm install --prefix products/security
+npm run dev                 # security dashboard (AI Studio)
+# or
+npm run dev:homepage
+npm run dev:orozco
+npm run dev:silverback
+npm run dev:timesheets
+```
+
+For the security app, set `GEMINI_API_KEY` in `products/security/.env.local`.
 
 ## Auto-deploy homepage to Cloudflare Pages
 
-This repo now supports push-to-deploy for the homepage stack (`/homepage` + `/orozco`)
-via GitHub Actions workflow:
-`.github/workflows/deploy-cloudflare-homepage.yml`.
+Push-to-deploy for the homepage stack (`agency/homepage` + `clients/orozco`)
+is `.github/workflows/deploy-cloudflare-homepage.yml`.
 
 Set these once in GitHub repo settings:
 
@@ -38,15 +62,13 @@ to Cloudflare Pages.
 
 ## Time Sheets by Silverback — prototype
 
-This branch also contains a visual prototype of **Time Sheets by Silverback**
-(a separate product — time-and-labor SaaS for field-service crews) under
-[`/timesheets/`](./timesheets/). It's a self-contained Vite + React app with
-its own `package.json` and does not touch the surveillance app above.
+Visual prototype of **Time Sheets by Silverback** lives in
+[`products/timesheets/`](./products/timesheets/). Self-contained Vite + React app.
 
 ```bash
-cd timesheets
+cd products/timesheets
 npm install
 npm run dev   # open http://localhost:5173
 ```
 
-See [`timesheets/README.md`](./timesheets/README.md) for deploy options.
+See [`products/timesheets/README.md`](./products/timesheets/README.md) for deploy options.
