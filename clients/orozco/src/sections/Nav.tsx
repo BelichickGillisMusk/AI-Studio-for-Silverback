@@ -29,8 +29,9 @@ export function Nav() {
             href={`tel:${PHONE_DIGITS}`}
             className="inline-flex h-9 items-center gap-2 rounded-full bg-forest px-3 text-xs font-semibold text-paper hover:bg-forest-dark"
           >
-            <Phone size={14} />
-            <span className="hidden sm:inline tabular">{PHONE_DISPLAY}</span>
+            <Phone size={14} aria-hidden="true" />
+            <span className="hidden tabular sm:inline">{PHONE_DISPLAY}</span>
+            <span className="sr-only sm:hidden">{t.contact.cta}</span>
           </a>
         </div>
       </div>
