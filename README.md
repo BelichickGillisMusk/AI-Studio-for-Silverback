@@ -30,16 +30,14 @@ View the security app in AI Studio: https://ai.studio/apps/d3deeaf9-500c-40a5-a8
 
 **Prerequisites:** Node.js
 
-From the repo root:
+Each app has its own `package.json`. Install that app, then run it:
 
 ```bash
-npm install --prefix products/security
-npm run dev                 # security dashboard (AI Studio)
-# or
-npm run dev:homepage
-npm run dev:orozco
-npm run dev:silverback
-npm run dev:timesheets
+npm install --prefix products/security && npm run dev
+npm install --prefix agency/homepage && npm run dev:homepage
+npm install --prefix clients/orozco && npm run dev:orozco
+npm install --prefix agency/silverback && npm run dev:silverback
+npm install --prefix products/timesheets && npm run dev:timesheets
 ```
 
 For the security app, set `GEMINI_API_KEY` in `products/security/.env.local`.

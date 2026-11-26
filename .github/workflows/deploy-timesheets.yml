@@ -33,6 +33,10 @@ jobs:
         with:
           node-version: '20'
           cache: npm
+          cache-dependency-path: |
+            agency/silverback/package-lock.json
+            clients/orozco/package-lock.json
+            products/timesheets/package-lock.json
 
       - name: Install silverback
         working-directory: agency/silverback
