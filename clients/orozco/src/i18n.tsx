@@ -20,8 +20,14 @@ type Dict = {
   };
   trust: { licensed: string; insured: string; bonded: string; years: string; bilingual: string; free: string };
   story: { heading: string; body: string };
-  gallery: { heading: string; sub: string; placeholder: string };
+  process: {
+    heading: string;
+    sub: string;
+    steps: { title: string; body: string }[];
+  };
   area: { heading: string; sub: string; cities: string[]; note: string };
+  founder: string;
+  today: string;
   hours: {
     heading: string;
     days: { label: string; value: string }[];
@@ -46,12 +52,12 @@ const EN: Dict = {
   nav: { services: 'Services', story: 'Our Story', area: 'Service Area', contact: 'Contact' },
   hero: {
     eyebrow: 'Sunnyvale, CA · Licensed · Insured · Bonded',
-    title: 'Landscaping, irrigation & concrete.',
+    title: 'Lawns, irrigation, and concrete.',
     titleAccent: 'Done right the first time.',
     subtitle:
-      'Family-run, bilingual crew serving Sunnyvale and the Peninsula for 10 years. Free estimates — no job too small.',
+      'Miguel Orozco. A family crew. Ten years on the Peninsula. Free estimates. No job too small.',
     ctaCall: 'Call (408) 205-8417',
-    ctaEstimate: 'Get a Free Estimate',
+    ctaEstimate: 'Email for an estimate',
     trust: 'No job too small · Same-week estimates · Se habla español',
   },
   services: {
@@ -79,13 +85,43 @@ const EN: Dict = {
     body:
       'Orozco Landscaping has served owners of residential and commercial properties in Sunnyvale and the surrounding Peninsula for the last decade. We are a family-run, locally owned shop — licensed, insured, and bonded — with a crew that treats every yard like it belongs to their own family. From a one-visit lawn clean-up to full irrigation and concrete projects, we listen first, quote honestly, and show up when we said we would. No job is too small.',
   },
-  gallery: { heading: 'Recent work', sub: 'A few jobs from the last few months.', placeholder: 'Photo coming soon' },
-  area: {
-    heading: 'Service area',
-    sub: 'We work across the Peninsula and South Bay.',
-    cities: ['Sunnyvale', 'Mountain View', 'Cupertino', 'Los Altos', 'Santa Clara', 'Palo Alto'],
-    note: 'Not on the list? Call us — we probably still cover you.',
+  process: {
+    heading: 'How a job starts',
+    sub: 'You talk to Miguel. There is no portal.',
+    steps: [
+      {
+        title: 'Call or text',
+        body: '(408) 205-8417. We answer in English or Spanish.',
+      },
+      {
+        title: 'We walk the yard',
+        body: 'Same-week estimates. We look before we name a price.',
+      },
+      {
+        title: 'We do the work',
+        body: 'One sprinkler head, or a driveway we tear out and pour again.',
+      },
+    ],
   },
+  area: {
+    heading: 'Where we work',
+    sub: 'Service-area crew. No storefront. Sunnyvale is home.',
+    cities: [
+      'Sunnyvale',
+      'Mountain View',
+      'Cupertino',
+      'Los Altos',
+      'Los Altos Hills',
+      'Santa Clara',
+      'Palo Alto',
+      'Saratoga',
+      'Campbell',
+      'Los Gatos',
+    ],
+    note: 'Not on the list? Call. We still cover a lot of the Peninsula.',
+  },
+  founder: 'Founder',
+  today: 'Today',
   hours: {
     heading: 'Hours',
     days: [
@@ -101,8 +137,8 @@ const EN: Dict = {
     openNow: 'Open now',
   },
   contact: {
-    heading: 'Get a free estimate',
-    sub: 'Fastest way to reach us is a call or text. We answer in English or Spanish.',
+    heading: 'Call Miguel',
+    sub: 'A call or a text is the fastest way. English or Spanish.',
     callLabel: 'Call or text',
     emailLabel: 'Email',
     cta: 'Call (408) 205-8417',
@@ -118,12 +154,12 @@ const ES: Dict = {
   nav: { services: 'Servicios', story: 'Sobre Nosotros', area: 'Área de Servicio', contact: 'Contacto' },
   hero: {
     eyebrow: 'Sunnyvale, CA · Con licencia · Asegurado · Afianzado',
-    title: 'Jardinería, riego y concreto.',
+    title: 'Jardín, riego y concreto.',
     titleAccent: 'Bien hecho desde la primera vez.',
     subtitle:
-      'Cuadrilla familiar y bilingüe sirviendo Sunnyvale y la Península por 10 años. Cotizaciones gratis — ningún trabajo es muy pequeño.',
+      'Miguel Orozco. Cuadrilla familiar. Diez años en la Península. Cotización gratis. Ningún trabajo es muy pequeño.',
     ctaCall: 'Llama (408) 205-8417',
-    ctaEstimate: 'Cotización Gratis',
+    ctaEstimate: 'Correo para cotizar',
     trust: 'Ningún trabajo es muy pequeño · Cotizaciones la misma semana · Se habla español',
   },
   services: {
@@ -151,13 +187,43 @@ const ES: Dict = {
     body:
       'Orozco Landscaping ha servido a dueños de propiedades residenciales y comerciales en Sunnyvale y la Península durante la última década. Somos un negocio familiar y local — con licencia, asegurado y afianzado — con una cuadrilla que trata cada jardín como si fuera propio. Desde una limpieza de una visita hasta proyectos completos de riego y concreto, escuchamos primero, cotizamos honestamente, y llegamos cuando dijimos que íbamos a llegar. Ningún trabajo es demasiado pequeño.',
   },
-  gallery: { heading: 'Trabajos recientes', sub: 'Algunos trabajos de los últimos meses.', placeholder: 'Foto próximamente' },
-  area: {
-    heading: 'Área de servicio',
-    sub: 'Trabajamos en toda la Península y el South Bay.',
-    cities: ['Sunnyvale', 'Mountain View', 'Cupertino', 'Los Altos', 'Santa Clara', 'Palo Alto'],
-    note: '¿No está en la lista? Llámanos — probablemente sí te cubrimos.',
+  process: {
+    heading: 'Cómo empieza un trabajo',
+    sub: 'Hablas con Miguel. No hay portal.',
+    steps: [
+      {
+        title: 'Llama o manda texto',
+        body: '(408) 205-8417. Contestamos en inglés o español.',
+      },
+      {
+        title: 'Vemos el jardín',
+        body: 'Cotización la misma semana. Miramos antes de dar precio.',
+      },
+      {
+        title: 'Hacemos el trabajo',
+        body: 'Un aspersor, o una cochera que arrancamos y volvemos a colar.',
+      },
+    ],
   },
+  area: {
+    heading: 'Dónde trabajamos',
+    sub: 'Cuadrilla de área. Sin local. Sunnyvale es la casa.',
+    cities: [
+      'Sunnyvale',
+      'Mountain View',
+      'Cupertino',
+      'Los Altos',
+      'Los Altos Hills',
+      'Santa Clara',
+      'Palo Alto',
+      'Saratoga',
+      'Campbell',
+      'Los Gatos',
+    ],
+    note: '¿No está en la lista? Llama. Cubrimos buena parte de la Península.',
+  },
+  founder: 'Fundador',
+  today: 'Hoy',
   hours: {
     heading: 'Horario',
     days: [
@@ -173,8 +239,8 @@ const ES: Dict = {
     openNow: 'Abierto ahora',
   },
   contact: {
-    heading: 'Cotización gratis',
-    sub: 'La forma más rápida de contactarnos es por llamada o texto. Contestamos en inglés o español.',
+    heading: 'Llama a Miguel',
+    sub: 'Una llamada o un texto es lo más rápido. Inglés o español.',
     callLabel: 'Llamada o texto',
     emailLabel: 'Correo',
     cta: 'Llama (408) 205-8417',
@@ -220,9 +286,28 @@ export function useLang(): LangCtx {
   return v;
 }
 
+const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
+
+function pacificParts(now: Date): { weekday: number; hour: number } {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Los_Angeles',
+    weekday: 'short',
+    hour: 'numeric',
+    hourCycle: 'h23',
+  }).formatToParts(now);
+  const weekdayLabel = parts.find((part) => part.type === 'weekday')?.value ?? 'Sun';
+  const hour = Number(parts.find((part) => part.type === 'hour')?.value ?? '0');
+  const weekday = WEEKDAYS.indexOf(weekdayLabel as (typeof WEEKDAYS)[number]);
+  return { weekday: weekday < 0 ? 0 : weekday, hour };
+}
+
+/** Sunday index 0 through Saturday index 6, in Pacific time. */
+export function pacificWeekday(now: Date = new Date()): number {
+  return pacificParts(now).weekday;
+}
+
 export function isOpenNow(now: Date = new Date()): boolean {
-  const day = now.getDay(); // 0 Sun .. 6 Sat
-  if (day === 0) return false;
-  const hour = now.getHours();
+  const { weekday, hour } = pacificParts(now);
+  if (weekday === 0) return false;
   return hour >= 5 && hour < 18;
 }
