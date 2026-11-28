@@ -1,23 +1,25 @@
 import { useLang } from '../i18n';
+import { EMAIL, PHONE_DISPLAY } from '../facts';
 
 export function Footer() {
   const { t } = useLang();
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-ink text-white/80">
-      <div className="mx-auto max-w-6xl px-5 py-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-sm">
+    <footer className="border-t border-paper/10 bg-forest-dark text-paper/70">
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-8 text-sm md:flex-row md:items-end md:justify-between">
         <div>
-          <div className="text-white font-extrabold tracking-tight text-base">Orozco Landscaping</div>
-          <div className="text-white/60 text-xs mt-0.5">Sunnyvale, CA · (408) 205-8417 · migueob89@gmail.com</div>
+          <p className="font-display text-lg text-paper">Orozco Landscaping</p>
+          <p className="mt-1 text-xs">Sunnyvale, CA · {PHONE_DISPLAY} · {EMAIL}</p>
         </div>
-        <div className="text-white/60 text-xs">
-          {t.footer.builtBy} ·{' '}
-          <a href="mailto:bryan@silverbackai.agency" className="underline decoration-white/30 hover:decoration-white">
+        <p className="max-w-sm text-xs leading-relaxed">
+          {t.footer.builtBy}
+          {' · '}
+          <a href="mailto:bryan@silverbackai.agency" className="underline decoration-paper/30 hover:text-paper">
             bryan@silverbackai.agency
           </a>
-        </div>
-        <div className="text-white/40 text-xs">© {year} Orozco Landscaping. {t.footer.rights}</div>
+        </p>
+        <p className="text-xs text-paper/45">© {year} Orozco Landscaping. {t.footer.rights}</p>
       </div>
     </footer>
   );
