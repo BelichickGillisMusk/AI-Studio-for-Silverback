@@ -1,23 +1,25 @@
 #!/usr/bin/env bash
 # Build script for Cloudflare Pages.
-# Composes homepage/ and orozco/ into public_dist/, adds SPA fallback + cache headers.
+# Composes agency/homepage and clients/orozco into public_dist/, adds SPA fallback + cache headers.
 set -euo pipefail
 
-(cd homepage && npm ci --silent && npm run build)
-(cd orozco   && npm ci --silent && VITE_BASE_PATH=/orozco/ npm run build)
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-rm -rf public_dist
-mkdir -p public_dist
-cp -r homepage/dist/. public_dist/
-mkdir -p public_dist/orozco
-cp -r orozco/dist/. public_dist/orozco/
+(cd "$ROOT/agency/homepage" && npm ci --silent && npm run build)
+(cd "$ROOT/clients/orozco" && npm ci --silent && VITE_BASE_PATH=/orozco/ npm run build)
 
-cat > public_dist/_redirects <<'EOF'
+rm -rf "$ROOT/public_dist"
+mkdir -p "$ROOT/public_dist"
+cp -r "$ROOT/agency/homepage/dist/." "$ROOT/public_dist/"
+mkdir -p "$ROOT/public_dist/orozco"
+cp -r "$ROOT/clients/orozco/dist/." "$ROOT/public_dist/orozco/"
+
+cat > "$ROOT/public_dist/_redirects" <<'EOF'
 /orozco/*  /orozco/index.html  200
 /*         /index.html         200
 EOF
 
-cat > public_dist/_headers <<'EOF'
+cat > "$ROOT/public_dist/_headers" <<'EOF'
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 /orozco/assets/*

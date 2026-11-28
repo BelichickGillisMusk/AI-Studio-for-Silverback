@@ -3,9 +3,9 @@
 A sendable visual prototype of the time-and-labor SaaS for field-service crews.
 First tenant: **Orosco Landscaping** (Oakland, CA).
 
-This is a self-contained Vite + React app that lives alongside the existing
-code in this repo without touching it. Real backend (Firebase Auth +
-Firestore + compliance engine + Stripe) lands in a separate repo/session.
+This is a self-contained Vite + React app under `products/timesheets/`.
+Real backend (Firebase Auth + Firestore + compliance engine + Stripe)
+lands in a separate repo/session.
 
 ## What's in the demo
 
@@ -22,7 +22,7 @@ no persistence across devices.
 ## Run locally
 
 ```bash
-cd timesheets
+cd products/timesheets
 npm install
 npm run dev
 # open http://localhost:5173
@@ -33,10 +33,10 @@ For iPhone testing in Chrome devtools: set viewport to `iPhone 15` (393×852).
 ## Build a static bundle
 
 ```bash
-cd timesheets
+cd products/timesheets
 npm install
 npm run build
-# output in timesheets/dist/
+# output in products/timesheets/dist/
 ```
 
 ## Three ways to send it to Miguel
@@ -44,19 +44,19 @@ npm run build
 1. **Vercel drag-and-drop (fastest).**
    - Run `npm run build`
    - Go to <https://vercel.com/new>
-   - Drag the `timesheets/dist/` folder onto the page
+   - Drag the `products/timesheets/dist/` folder onto the page
    - Vercel gives you a URL like `time-sheets-xyz.vercel.app` in ~30 seconds
    - Send that link
 
 2. **Netlify drop.**
    - Run `npm run build`
    - Go to <https://app.netlify.com/drop>
-   - Drag the `timesheets/dist/` folder
+   - Drag the `products/timesheets/dist/` folder
    - Same result, different host
 
 3. **Cloudflare Pages via Wrangler.**
    ```bash
-   npx wrangler pages deploy timesheets/dist --project-name time-sheets
+   npx wrangler pages deploy products/timesheets/dist --project-name time-sheets
    ```
 
 No env vars, no secrets, no backend to stand up. It's a static SPA.

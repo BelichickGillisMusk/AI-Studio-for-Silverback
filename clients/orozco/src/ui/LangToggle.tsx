@@ -6,14 +6,14 @@ export function LangToggle() {
     <div
       role="group"
       aria-label={t.langToggle.label}
-      className="inline-flex items-center rounded-full border border-line bg-paper p-0.5 text-xs font-bold"
+      className="inline-flex items-center rounded-full border border-line bg-cream p-0.5 text-xs font-semibold"
     >
       <button
         type="button"
         onClick={() => setLang('en')}
         aria-pressed={lang === 'en'}
-        className={`px-2.5 h-7 rounded-full transition ${
-          lang === 'en' ? 'bg-us-blue text-white' : 'text-ink-muted hover:text-ink'
+        className={`h-7 rounded-full px-2.5 transition ${
+          lang === 'en' ? 'bg-forest text-paper' : 'text-ink-muted hover:text-ink'
         }`}
       >
         {t.langToggle.en}
@@ -22,8 +22,8 @@ export function LangToggle() {
         type="button"
         onClick={() => setLang('es')}
         aria-pressed={lang === 'es'}
-        className={`px-2.5 h-7 rounded-full transition ${
-          lang === 'es' ? 'bg-mx-green text-white' : 'text-ink-muted hover:text-ink'
+        className={`h-7 rounded-full px-2.5 transition ${
+          lang === 'es' ? 'bg-forest text-paper' : 'text-ink-muted hover:text-ink'
         }`}
       >
         {t.langToggle.es}
